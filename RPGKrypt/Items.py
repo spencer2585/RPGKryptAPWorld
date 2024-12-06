@@ -1,111 +1,269 @@
-from typing import Dict, NamedTuple, Optional
+from typing import Callable, Dict, NamedTuple, Optional, TYPE_CHECKING
 
 from BaseClasses import Item, ItemClassification
 
+if TYPE_CHECKING:
+    from . import KryptWorld
 
-class RLItem(Item):
-    game: str = "Rogue Legacy"
+
+class KryptItem(Item):
+    game = "RPGKrypt"
 
 
-class RLItemData(NamedTuple):
-    category: str
+class KryptItemData(NamedTuple):
     code: Optional[int] = None
-    classification: ItemClassification = ItemClassification.filler
-    max_quantity: int = 1
-    weight: int = 1
+    type: ItemClassification = ItemClassification.filler
+    db_id: int
+    can_create: Callable[["KryptWorld"], bool] = lambda world: True
 
 
-def get_items_by_category(category: str) -> Dict[str, RLItemData]:
-    item_dict: Dict[str, RLItemData] = {}
-    for name, data in item_table.items():
-        if data.category == category:
-            item_dict.setdefault(name, data)
-
-    return item_dict
-
-
-item_table: Dict[str, RLItemData] = {
-    # Vendors
-    "Blacksmith":               RLItemData("Vendors",    90_000, ItemClassification.progression),
-    "Enchantress":              RLItemData("Vendors",    90_001, ItemClassification.progression),
-    "Architect":                RLItemData("Vendors",    90_002, ItemClassification.useful),
-
-    # Classes
-    "Progressive Knights":      RLItemData("Classes",    90_003, ItemClassification.useful,                      2),
-    "Progressive Mages":        RLItemData("Classes",    90_004, ItemClassification.useful,                      2),
-    "Progressive Barbarians":   RLItemData("Classes",    90_005, ItemClassification.useful,                      2),
-    "Progressive Knaves":       RLItemData("Classes",    90_006, ItemClassification.useful,                      2),
-    "Progressive Shinobis":     RLItemData("Classes",    90_007, ItemClassification.useful,                      2),
-    "Progressive Miners":       RLItemData("Classes",    90_008, ItemClassification.useful,                      2),
-    "Progressive Liches":       RLItemData("Classes",    90_009, ItemClassification.useful,                      2),
-    "Progressive Spellthieves": RLItemData("Classes",    90_010, ItemClassification.useful,                      2),
-    "Dragons":                  RLItemData("Classes",    90_096, ItemClassification.progression),
-    "Traitors":                 RLItemData("Classes",    90_097, ItemClassification.useful),
-
-    # Skills
-    "Health Up":                RLItemData("Skills",     90_013, ItemClassification.progression_skip_balancing, 15),
-    "Mana Up":                  RLItemData("Skills",     90_014, ItemClassification.progression_skip_balancing, 15),
-    "Attack Up":                RLItemData("Skills",     90_015, ItemClassification.progression_skip_balancing, 15),
-    "Magic Damage Up":          RLItemData("Skills",     90_016, ItemClassification.progression_skip_balancing, 15),
-    "Armor Up":                 RLItemData("Skills",     90_017, ItemClassification.useful,                     15),
-    "Equip Up":                 RLItemData("Skills",     90_018, ItemClassification.useful,                      5),
-    "Crit Chance Up":           RLItemData("Skills",     90_019, ItemClassification.useful,                      5),
-    "Crit Damage Up":           RLItemData("Skills",     90_020, ItemClassification.useful,                      5),
-    "Down Strike Up":           RLItemData("Skills",     90_021),
-    "Gold Gain Up":             RLItemData("Skills",     90_022),
-    "Potion Efficiency Up":     RLItemData("Skills",     90_023),
-    "Invulnerability Time Up":  RLItemData("Skills",     90_024),
-    "Mana Cost Down":           RLItemData("Skills",     90_025),
-    "Death Defiance":           RLItemData("Skills",     90_026, ItemClassification.useful),
-    "Haggling":                 RLItemData("Skills",     90_027, ItemClassification.useful),
-    "Randomize Children":       RLItemData("Skills",     90_028, ItemClassification.useful),
-
-    # Blueprints
-    "Progressive Blueprints":   RLItemData("Blueprints", 90_055, ItemClassification.useful,                     15),
-    "Squire Blueprints":        RLItemData("Blueprints", 90_040, ItemClassification.useful),
-    "Silver Blueprints":        RLItemData("Blueprints", 90_041, ItemClassification.useful),
-    "Guardian Blueprints":      RLItemData("Blueprints", 90_042, ItemClassification.useful),
-    "Imperial Blueprints":      RLItemData("Blueprints", 90_043, ItemClassification.useful),
-    "Royal Blueprints":         RLItemData("Blueprints", 90_044, ItemClassification.useful),
-    "Knight Blueprints":        RLItemData("Blueprints", 90_045, ItemClassification.useful),
-    "Ranger Blueprints":        RLItemData("Blueprints", 90_046, ItemClassification.useful),
-    "Sky Blueprints":           RLItemData("Blueprints", 90_047, ItemClassification.useful),
-    "Dragon Blueprints":        RLItemData("Blueprints", 90_048, ItemClassification.useful),
-    "Slayer Blueprints":        RLItemData("Blueprints", 90_049, ItemClassification.useful),
-    "Blood Blueprints":         RLItemData("Blueprints", 90_050, ItemClassification.useful),
-    "Sage Blueprints":          RLItemData("Blueprints", 90_051, ItemClassification.useful),
-    "Retribution Blueprints":   RLItemData("Blueprints", 90_052, ItemClassification.useful),
-    "Holy Blueprints":          RLItemData("Blueprints", 90_053, ItemClassification.useful),
-    "Dark Blueprints":          RLItemData("Blueprints", 90_054, ItemClassification.useful),
-
-    # Runes
-    "Vault Runes":              RLItemData("Runes",      90_060, ItemClassification.progression),
-    "Sprint Runes":             RLItemData("Runes",      90_061, ItemClassification.progression),
-    "Vampire Runes":            RLItemData("Runes",      90_062, ItemClassification.useful),
-    "Sky Runes":                RLItemData("Runes",      90_063, ItemClassification.progression),
-    "Siphon Runes":             RLItemData("Runes",      90_064, ItemClassification.useful),
-    "Retaliation Runes":        RLItemData("Runes",      90_065),
-    "Bounty Runes":             RLItemData("Runes",      90_066),
-    "Haste Runes":              RLItemData("Runes",      90_067),
-    "Curse Runes":              RLItemData("Runes",      90_068),
-    "Grace Runes":              RLItemData("Runes",      90_069),
-    "Balance Runes":            RLItemData("Runes",      90_070, ItemClassification.useful),
-
-    # Junk
-    "Triple Stat Increase":     RLItemData("Filler",     90_030, weight=6),
-    "1000 Gold":                RLItemData("Filler",     90_031, weight=3),
-    "3000 Gold":                RLItemData("Filler",     90_032, weight=2),
-    "5000 Gold":                RLItemData("Filler",     90_033, weight=1),
+item_data_table: Dict[str, KryptItemData] = {
+    "A2Key": KryptItemData(
+        code=80000002,
+        type=ItemClassification.progression,
+        db_id=2,
+    ),
+    "A3Key": KryptItemData(
+        code=80000003,
+        type=ItemClassification.progression,
+        db_id=3,
+    ),
+    "A4Key": KryptItemData(
+        code=80000004,
+        type=ItemClassification.progression,
+        db_id=4,
+    ),
+    "A5Key": KryptItemData(
+        code=80000005,
+        type=ItemClassification.progression,
+        db_id=5,
+    ),
+    "A6Key": KryptItemData(
+        code=80000006,
+        type=ItemClassification.progression,
+        db_id=6,
+    ),
+    "A7Key": KryptItemData(
+        code=80000007,
+        type=ItemClassification.progression,
+        db_id=7,
+    ),
+    "A8Key": KryptItemData(
+        code=80000008,
+        type=ItemClassification.progression,
+        db_id=8,
+    ),
+    "A9Key": KryptItemData(
+        code=80000009,
+        type=ItemClassification.progression,
+        db_id=9,
+    ),
+    "A10Key": KryptItemData(
+        code=800000010,
+        type=ItemClassification.progression,
+        db_id=10,
+    ),
+    "B1Key": KryptItemData(
+        code=80000011,
+        type=ItemClassification.progression,
+        db_id=11,
+    ),
+    "B2Key": KryptItemData(
+        code=80000012,
+        type=ItemClassification.progression,
+        db_id=12,
+    ),
+    "B3Key": KryptItemData(
+        code=80000013,
+        type=ItemClassification.progression,
+        db_id=13,
+    ),
+    "B4Key": KryptItemData(
+        code=80000014,
+        type=ItemClassification.progression,
+        db_id=14,
+    ),
+    "B5Key": KryptItemData(
+        code=80000015,
+        type=ItemClassification.progression,
+        db_id=15,
+    ),
+    "B6Key": KryptItemData(
+        code=80000016,
+        type=ItemClassification.progression,
+        db_id=16,
+    ),
+    "B7Key": KryptItemData(
+        code=80000017,
+        type=ItemClassification.progression,
+        db_id=17,
+    ),
+    "B8Key": KryptItemData(
+        code=80000018,
+        type=ItemClassification.progression,
+        db_id=18,
+    ),
+    "B9Key": KryptItemData(
+        code=80000019,
+        type=ItemClassification.progression,
+        db_id=19,
+    ),
+    "B10Key": KryptItemData(
+        code=80000020,
+        type=ItemClassification.progression,
+        db_id=20,
+    ),
+    "C1Key": KryptItemData(
+        code=80000021,
+        type=ItemClassification.progression,
+        db_id=21,
+    ),
+    "C2Key": KryptItemData(
+        code=80000022,
+        type=ItemClassification.progression,
+        db_id=22,
+    ),
+    "C3Key": KryptItemData(
+        code=80000023,
+        type=ItemClassification.progression,
+        db_id=23,
+    ),
+    "C4Key": KryptItemData(
+        code=80000024,
+        type=ItemClassification.progression,
+        db_id=24,
+    ),
+    "C5Key": KryptItemData(
+        code=80000025,
+        type=ItemClassification.progression,
+        db_id=25,
+    ),
+    "C6Key": KryptItemData(
+        code=80000026,
+        type=ItemClassification.progression,
+        db_id=26,
+    ),
+    "C7Key": KryptItemData(
+        code=80000027,
+        type=ItemClassification.progression,
+        db_id=27,
+    ),
+    "C8Key": KryptItemData(
+        code=80000028,
+        type=ItemClassification.progression,
+        db_id=28,
+    ),
+    "C9Key": KryptItemData(
+        code=80000029,
+        type=ItemClassification.progression,
+        db_id=29,
+    ),
+    "C10Key": KryptItemData(
+        code=80000030,
+        type=ItemClassification.progression,
+        db_id=30,
+    ),
+    "D1Key": KryptItemData(
+        code=80000031,
+        type=ItemClassification.progression,
+        db_id=31,
+    ),
+    "D2Key": KryptItemData(
+        code=80000032,
+        type=ItemClassification.progression,
+        db_id=32,
+    ),
+    "D3Key": KryptItemData(
+        code=80000033,
+        type=ItemClassification.progression,
+        db_id=33,
+    ),
+    "D4Key": KryptItemData(
+        code=80000034,
+        type=ItemClassification.progression,
+        db_id=34,
+    ),
+    "D5Key": KryptItemData(
+        code=80000035,
+        type=ItemClassification.progression,
+        db_id=35,
+    ),
+    "D6Key": KryptItemData(
+        code=80000036,
+        type=ItemClassification.progression,
+        db_id=36,
+    ),
+    "D7Key": KryptItemData(
+        code=80000037,
+        type=ItemClassification.progression,
+        db_id=37,
+    ),
+    "D8Key": KryptItemData(
+        code=80000038,
+        type=ItemClassification.progression,
+        db_id=38,
+    ),
+    "D9Key": KryptItemData(
+        code=80000039,
+        type=ItemClassification.progression,
+        db_id=39,
+    ),
+    "D10Key": KryptItemData(
+        code=80000040,
+        type=ItemClassification.progression,
+        db_id=40,
+    ),
+    "E1Key": KryptItemData(
+        code=80000041,
+        type=ItemClassification.progression,
+        db_id=41,
+    ),
+    "E2Key": KryptItemData(
+        code=80000042,
+        type=ItemClassification.progression,
+        db_id=42,
+    ),
+    "E3Key": KryptItemData(
+        code=80000043,
+        type=ItemClassification.progression,
+        db_id=43,
+    ),
+    "E4Key": KryptItemData(
+        code=80000044,
+        type=ItemClassification.progression,
+        db_id=44,
+    ),
+    "E5Key": KryptItemData(
+        code=80000045,
+        type=ItemClassification.progression,
+        db_id=45,
+    ),
+    "E6Key": KryptItemData(
+        code=80000046,
+        type=ItemClassification.progression,
+        db_id=46,
+    ),
+    "E7Key": KryptItemData(
+        code=80000047,
+        type=ItemClassification.progression,
+        db_id=47,
+    ),
+    "E8Key": KryptItemData(
+        code=80000048,
+        type=ItemClassification.progression,
+        db_id=48,
+    ),
+    "E9Key": KryptItemData(
+        code=80000049,
+        type=ItemClassification.progression,
+        db_id=49,
+    ),
+    "E10Key": KryptItemData(
+        code=80000050,
+        type=ItemClassification.progression,
+        db_id=50,
+    ),
+    
 }
 
-event_item_table: Dict[str, RLItemData] = {
-    "Defeat Khidr":             RLItemData("Event", classification=ItemClassification.progression),
-    "Defeat Alexander":         RLItemData("Event", classification=ItemClassification.progression),
-    "Defeat Ponce de Leon":     RLItemData("Event", classification=ItemClassification.progression),
-    "Defeat Herodotus":         RLItemData("Event", classification=ItemClassification.progression),
-    "Defeat Neo Khidr":         RLItemData("Event", classification=ItemClassification.progression),
-    "Defeat Alexander IV":      RLItemData("Event", classification=ItemClassification.progression),
-    "Defeat Ponce de Freon":    RLItemData("Event", classification=ItemClassification.progression),
-    "Defeat Astrodotus":        RLItemData("Event", classification=ItemClassification.progression),
-    "Defeat The Fountain":      RLItemData("Event", classification=ItemClassification.progression),
-}
+item_table = {name: data.code for name, data in item_data_table.items() if data.code is not None}

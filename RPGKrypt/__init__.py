@@ -1,243 +1,101 @@
-from typing import List
+from typing import List, Dict, Any
 
-from BaseClasses import Tutorial
+from BaseClasses import Region, Tutorial
 from worlds.AutoWorld import WebWorld, World
-from .Items import RLItem, RLItemData, event_item_table, get_items_by_category, item_table
-from .Locations import RLLocation, location_table
-from .Options import RLOptions
-from .Presets import rl_options_presets
-from .Regions import create_regions
-from .Rules import set_rules
+from .Items import KryptItem, item_data_table, item_table
+from .Locations import KryptLocation, location_data_table, location_table, locked_locations
+from .Options import KryptOptions
+from .Regions import region_data_table
+from .Rules import get_button_rule
 
 
-class RLWeb(WebWorld):
-    theme = "stone"
-    tutorials = [Tutorial(
-        "Multiworld Setup Guide",
-        "A guide to setting up the Rogue Legacy Randomizer software on your computer. This guide covers single-player, "
-        "multiworld, and related software.",
-        "English",
-        "rogue-legacy_en.md",
-        "rogue-legacy/en",
-        ["Phar"]
-    )]
-    bug_report_page = "https://github.com/ThePhar/RogueLegacyRandomizer/issues/new?assignees=&labels=bug&template=" \
-                      "report-an-issue---.md&title=%5BIssue%5D"
-    options_presets = rl_options_presets
+class KryptWebWorld(WebWorld):
+    theme = "partyTime"
+    
+    setup_en = Tutorial(
+        tutorial_name="Start Guide",
+        description="A guide to playing Clique.",
+        language="English",
+        file_name="guide_en.md",
+        link="guide/en",
+        authors=["Phar"]
+    )
+
+    setup_de = Tutorial(
+        tutorial_name="Anleitung zum Anfangen",
+        description="Eine Anleitung um Clique zu spielen.",
+        language="Deutsch",
+        file_name="guide_de.md",
+        link="guide/de",
+        authors=["Held_der_Zeit"]
+    )
+    
+    tutorials = [setup_en, setup_de]
 
 
-class RLWorld(World):
-    """
-    Rogue Legacy is a genealogical rogue-"LITE" where anyone can be a hero. Each time you die, your child will succeed
-    you. Every child is unique. One child might be colorblind, another might have vertigo-- they could even be a dwarf.
-    But that's OK, because no one is perfect, and you don't have to be to succeed.
-    """
-    game = "Rogue Legacy"
-    options_dataclass = RLOptions
-    options: RLOptions
-    topology_present = True
-    required_client_version = (0, 3, 5)
-    web = RLWeb()
+class KryptWorld(World):
+    """The greatest game of all time."""
 
-    item_name_to_id = {name: data.code for name, data in item_table.items() if data.code is not None}
-    location_name_to_id = {name: data.code for name, data in location_table.items() if data.code is not None}
+    game = "RPG Krypt"
+    web = KryptWebWorld()
+    options: KryptOptions
+    options_dataclass = KryptOptions
+    location_name_to_id = location_table
+    item_name_to_id = item_table
 
-    def fill_slot_data(self) -> dict:
-        return self.options.as_dict(*[name for name in self.options_dataclass.type_hints.keys()])
+    def create_item(self, name: str) -> KryptItem:
+        return KryptItem(name, item_data_table[name].type, item_data_table[name].code, self.player)
 
-    def generate_early(self):
-        # Check validation of names.
-        additional_lady_names = len(self.options.additional_lady_names.value)
-        additional_sir_names = len(self.options.additional_sir_names.value)
-        if not self.options.allow_default_names:
-            if additional_lady_names < int(self.options.number_of_children):
-                raise Exception(
-                    f"allow_default_names is off, but not enough names are defined in additional_lady_names. "
-                    f"Expected {int(self.options.number_of_children)}, Got {additional_lady_names}")
-
-            if additional_sir_names < int(self.options.number_of_children):
-                raise Exception(
-                    f"allow_default_names is off, but not enough names are defined in additional_sir_names. "
-                    f"Expected {int(self.options.number_of_children)}, Got {additional_sir_names}")
-
-    def create_items(self):
-        item_pool: List[RLItem] = []
-        total_locations = len(self.multiworld.get_unfilled_locations(self.player))
-        for name, data in item_table.items():
-            quantity = data.max_quantity
-
-            # Architect
-            if name == "Architect":
-                if self.options.architect == "disabled":
-                    continue
-                if self.options.architect == "start_unlocked":
-                    self.multiworld.push_precollected(self.create_item(name))
-                    continue
-                if self.options.architect == "early":
-                    self.multiworld.local_early_items[self.player]["Architect"] = 1
-
-            # Blacksmith and Enchantress
-            if name == "Blacksmith" or name == "Enchantress":
-                if self.options.vendors == "start_unlocked":
-                    self.multiworld.push_precollected(self.create_item(name))
-                    continue
-                if self.options.vendors == "early":
-                    self.multiworld.local_early_items[self.player]["Blacksmith"] = 1
-                    self.multiworld.local_early_items[self.player]["Enchantress"] = 1
-
-            # Haggling
-            if name == "Haggling" and self.options.disable_charon:
-                continue
-
-            # Blueprints
-            if data.category == "Blueprints":
-                # No progressive blueprints if progressive_blueprints are disabled.
-                if name == "Progressive Blueprints" and not self.options.progressive_blueprints:
-                    continue
-                # No distinct blueprints if progressive_blueprints are enabled.
-                elif name != "Progressive Blueprints" and self.options.progressive_blueprints:
-                    continue
-
-            # Classes
-            if data.category == "Classes":
-                if name == "Progressive Knights":
-                    if "Knight" not in self.options.available_classes:
-                        continue
-
-                    if self.options.starting_class == "knight":
-                        quantity = 1
-                if name == "Progressive Mages":
-                    if "Mage" not in self.options.available_classes:
-                        continue
-
-                    if self.options.starting_class == "mage":
-                        quantity = 1
-                if name == "Progressive Barbarians":
-                    if "Barbarian" not in self.options.available_classes:
-                        continue
-
-                    if self.options.starting_class == "barbarian":
-                        quantity = 1
-                if name == "Progressive Knaves":
-                    if "Knave" not in self.options.available_classes:
-                        continue
-
-                    if self.options.starting_class == "knave":
-                        quantity = 1
-                if name == "Progressive Miners":
-                    if "Miner" not in self.options.available_classes:
-                        continue
-
-                    if self.options.starting_class == "miner":
-                        quantity = 1
-                if name == "Progressive Shinobis":
-                    if "Shinobi" not in self.options.available_classes:
-                        continue
-
-                    if self.options.starting_class == "shinobi":
-                        quantity = 1
-                if name == "Progressive Liches":
-                    if "Lich" not in self.options.available_classes:
-                        continue
-
-                    if self.options.starting_class == "lich":
-                        quantity = 1
-                if name == "Progressive Spellthieves":
-                    if "Spellthief" not in self.options.available_classes:
-                        continue
-
-                    if self.options.starting_class == "spellthief":
-                        quantity = 1
-                if name == "Dragons":
-                    if "Dragon" not in self.options.available_classes:
-                        continue
-                if name == "Traitors":
-                    if "Traitor" not in self.options.available_classes:
-                        continue
-
-            # Skills
-            if name == "Health Up":
-                quantity = self.options.health_pool.value
-            elif name == "Mana Up":
-                quantity = self.options.mana_pool.value
-            elif name == "Attack Up":
-                quantity = self.options.attack_pool.value
-            elif name == "Magic Damage Up":
-                quantity = self.options.magic_damage_pool.value
-            elif name == "Armor Up":
-                quantity = self.options.armor_pool.value
-            elif name == "Equip Up":
-                quantity = self.options.equip_pool.value
-            elif name == "Crit Chance Up":
-                quantity = self.options.crit_chance_pool.value
-            elif name == "Crit Damage Up":
-                quantity = self.options.crit_damage_pool.value
-
-            # Ignore filler, it will be added in a later stage.
-            if data.category == "Filler":
-                continue
-
-            item_pool += [self.create_item(name) for _ in range(0, quantity)]
-
-        # Fill any empty locations with filler items.
-        while len(item_pool) < total_locations:
-            item_pool.append(self.create_item(self.get_filler_item_name()))
+    def create_items(self) -> None:
+        item_pool: List[KryptItem] = []
+        for name, item in item_data_table.items():
+            if item.code and item.can_create(self):
+                item_pool.append(self.create_item(name))
 
         self.multiworld.itempool += item_pool
 
+    def create_regions(self) -> None:
+        # Create regions.
+        for region_name in region_data_table.keys():
+            region = Region(region_name, self.player, self.multiworld)
+            self.multiworld.regions.append(region)
+
+        # Create locations.
+        for region_name, region_data in region_data_table.items():
+            region = self.get_region(region_name)
+            region.add_locations({
+                location_name: location_data.address for location_name, location_data in location_data_table.items()
+                if location_data.region == region_name and location_data.can_create(self)
+            }, KryptLocation)
+            region.add_exits(region_data_table[region_name].connecting_regions)
+
+        # Place locked locations.
+        for location_name, location_data in locked_locations.items():
+            # Ignore locations we never created.
+            if not location_data.can_create(self):
+                continue
+
+            locked_item = self.create_item(location_data_table[location_name].locked_item)
+            self.get_location(location_name).place_locked_item(locked_item)
+
+        # Set priority location for the Big Red Button!
+        self.options.priority_locations.value.add("The Big Red Button")
+
     def get_filler_item_name(self) -> str:
-        fillers = get_items_by_category("Filler")
-        weights = [data.weight for data in fillers.values()]
-        return self.random.choices([filler for filler in fillers.keys()], weights, k=1)[0]
+        return "A Cool Filler Item (No Satisfaction Guaranteed)"
 
-    def create_item(self, name: str) -> RLItem:
-        data = item_table[name]
-        return RLItem(name, data.classification, data.code, self.player)
+    def set_rules(self) -> None:
+        button_rule = get_button_rule(self)
+        self.get_location("The Big Red Button").access_rule = button_rule
+        self.get_location("In the Player's Mind").access_rule = button_rule
 
-    def create_event(self, name: str) -> RLItem:
-        data = event_item_table[name]
-        return RLItem(name, data.classification, data.code, self.player)
+        # Do not allow button activations on buttons.
+        self.get_location("The Big Red Button").item_rule = lambda item: item.name != "Button Activation"
 
-    def set_rules(self):
-        set_rules(self, self.player)
+        # Completion condition.
+        self.multiworld.completion_condition[self.player] = lambda state: state.has("The Urge to Push", self.player)
 
-    def create_regions(self):
-        create_regions(self)
-        self._place_events()
-
-    def _place_events(self):
-        # Fountain
-        self.multiworld.get_location("Fountain Room", self.player).place_locked_item(
-            self.create_event("Defeat The Fountain"))
-
-        # Khidr / Neo Khidr
-        if self.options.khidr == "vanilla":
-            self.multiworld.get_location("Castle Hamson Boss Room", self.player).place_locked_item(
-                self.create_event("Defeat Khidr"))
-        else:
-            self.multiworld.get_location("Castle Hamson Boss Room", self.player).place_locked_item(
-                self.create_event("Defeat Neo Khidr"))
-
-        # Alexander / Alexander IV
-        if self.options.alexander == "vanilla":
-            self.multiworld.get_location("Forest Abkhazia Boss Room", self.player).place_locked_item(
-                self.create_event("Defeat Alexander"))
-        else:
-            self.multiworld.get_location("Forest Abkhazia Boss Room", self.player).place_locked_item(
-                self.create_event("Defeat Alexander IV"))
-
-        # Ponce de Leon / Ponce de Freon
-        if self.options.leon == "vanilla":
-            self.multiworld.get_location("The Maya Boss Room", self.player).place_locked_item(
-                self.create_event("Defeat Ponce de Leon"))
-        else:
-            self.multiworld.get_location("The Maya Boss Room", self.player).place_locked_item(
-                self.create_event("Defeat Ponce de Freon"))
-
-        # Herodotus / Astrodotus
-        if self.options.herodotus == "vanilla":
-            self.multiworld.get_location("Land of Darkness Boss Room", self.player).place_locked_item(
-                self.create_event("Defeat Herodotus"))
-        else:
-            self.multiworld.get_location("Land of Darkness Boss Room", self.player).place_locked_item(
-                self.create_event("Defeat Astrodotus"))
+    def fill_slot_data(self) -> Dict[str, Any]:
+        return {
+            "color": self.options.color.current_key
+        }
