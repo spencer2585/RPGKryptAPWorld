@@ -18,252 +18,301 @@ class KryptItemData(NamedTuple):
 
 
 item_data_table: Dict[str, KryptItemData] = {
-    "A2Key": KryptItemData(
+    "A2_Key": KryptItemData(
         code=80000002,
         type=ItemClassification.progression,
         db_id=2,
     ),
-    "A3Key": KryptItemData(
+    "A3_Key": KryptItemData(
         code=80000003,
         type=ItemClassification.progression,
         db_id=3,
     ),
-    "A4Key": KryptItemData(
+    "A4_Key": KryptItemData(
         code=80000004,
         type=ItemClassification.progression,
         db_id=4,
     ),
-    "A5Key": KryptItemData(
+    "A5_Key": KryptItemData(
         code=80000005,
         type=ItemClassification.progression,
         db_id=5,
     ),
-    "A6Key": KryptItemData(
+    "A6_Key": KryptItemData(
         code=80000006,
         type=ItemClassification.progression,
         db_id=6,
     ),
-    "A7Key": KryptItemData(
+    "A7_Key": KryptItemData(
         code=80000007,
         type=ItemClassification.progression,
         db_id=7,
     ),
-    "A8Key": KryptItemData(
+    "A8_Key": KryptItemData(
         code=80000008,
         type=ItemClassification.progression,
         db_id=8,
     ),
-    "A9Key": KryptItemData(
+    "A9_Key": KryptItemData(
         code=80000009,
         type=ItemClassification.progression,
         db_id=9,
     ),
-    "A10Key": KryptItemData(
+    "A10_Key": KryptItemData(
         code=800000010,
         type=ItemClassification.progression,
         db_id=10,
     ),
-    "B1Key": KryptItemData(
+    "B1_Key": KryptItemData(
         code=80000011,
         type=ItemClassification.progression,
         db_id=11,
     ),
-    "B2Key": KryptItemData(
+    "B2_Key": KryptItemData(
         code=80000012,
         type=ItemClassification.progression,
         db_id=12,
     ),
-    "B3Key": KryptItemData(
+    "B3_Key": KryptItemData(
         code=80000013,
         type=ItemClassification.progression,
         db_id=13,
     ),
-    "B4Key": KryptItemData(
+    "B4_Key": KryptItemData(
         code=80000014,
         type=ItemClassification.progression,
         db_id=14,
     ),
-    "B5Key": KryptItemData(
+    "B5_Key": KryptItemData(
         code=80000015,
         type=ItemClassification.progression,
         db_id=15,
     ),
-    "B6Key": KryptItemData(
+    "B6_Key": KryptItemData(
         code=80000016,
         type=ItemClassification.progression,
         db_id=16,
     ),
-    "B7Key": KryptItemData(
+    "B7_Key": KryptItemData(
         code=80000017,
         type=ItemClassification.progression,
         db_id=17,
     ),
-    "B8Key": KryptItemData(
+    "B8_Key": KryptItemData(
         code=80000018,
         type=ItemClassification.progression,
         db_id=18,
     ),
-    "B9Key": KryptItemData(
+    "B9_Key": KryptItemData(
         code=80000019,
         type=ItemClassification.progression,
         db_id=19,
     ),
-    "B10Key": KryptItemData(
+    "B10_Key": KryptItemData(
         code=80000020,
         type=ItemClassification.progression,
         db_id=20,
     ),
-    "C1Key": KryptItemData(
+    "C1_Key": KryptItemData(
         code=80000021,
         type=ItemClassification.progression,
         db_id=21,
     ),
-    "C2Key": KryptItemData(
+    "C2_Key": KryptItemData(
         code=80000022,
         type=ItemClassification.progression,
         db_id=22,
     ),
-    "C3Key": KryptItemData(
+    "C3_Key": KryptItemData(
         code=80000023,
         type=ItemClassification.progression,
         db_id=23,
     ),
-    "C4Key": KryptItemData(
+    "C4_Key": KryptItemData(
         code=80000024,
         type=ItemClassification.progression,
         db_id=24,
     ),
-    "C5Key": KryptItemData(
+    "C5_Key": KryptItemData(
         code=80000025,
         type=ItemClassification.progression,
         db_id=25,
     ),
-    "C6Key": KryptItemData(
+    "C6_Key": KryptItemData(
         code=80000026,
         type=ItemClassification.progression,
         db_id=26,
     ),
-    "C7Key": KryptItemData(
+    "C7_Key": KryptItemData(
         code=80000027,
         type=ItemClassification.progression,
         db_id=27,
     ),
-    "C8Key": KryptItemData(
+    "C8_Key": KryptItemData(
         code=80000028,
         type=ItemClassification.progression,
         db_id=28,
     ),
-    "C9Key": KryptItemData(
+    "C9_Key": KryptItemData(
         code=80000029,
         type=ItemClassification.progression,
         db_id=29,
     ),
-    "C10Key": KryptItemData(
+    "C10_Key": KryptItemData(
         code=80000030,
         type=ItemClassification.progression,
         db_id=30,
     ),
-    "D1Key": KryptItemData(
+    "D1_Key": KryptItemData(
         code=80000031,
         type=ItemClassification.progression,
         db_id=31,
     ),
-    "D2Key": KryptItemData(
+    "D2_Key": KryptItemData(
         code=80000032,
         type=ItemClassification.progression,
         db_id=32,
     ),
-    "D3Key": KryptItemData(
+    "D3_Key": KryptItemData(
         code=80000033,
         type=ItemClassification.progression,
         db_id=33,
     ),
-    "D4Key": KryptItemData(
+    "D4_Key": KryptItemData(
         code=80000034,
         type=ItemClassification.progression,
         db_id=34,
     ),
-    "D5Key": KryptItemData(
+    "D5_Key": KryptItemData(
         code=80000035,
         type=ItemClassification.progression,
         db_id=35,
     ),
-    "D6Key": KryptItemData(
+    "D6_Key": KryptItemData(
         code=80000036,
         type=ItemClassification.progression,
         db_id=36,
     ),
-    "D7Key": KryptItemData(
+    "D7_Key": KryptItemData(
         code=80000037,
         type=ItemClassification.progression,
         db_id=37,
     ),
-    "D8Key": KryptItemData(
+    "D8_Key": KryptItemData(
         code=80000038,
         type=ItemClassification.progression,
         db_id=38,
     ),
-    "D9Key": KryptItemData(
+    "D9_Key": KryptItemData(
         code=80000039,
         type=ItemClassification.progression,
         db_id=39,
     ),
-    "D10Key": KryptItemData(
+    "D10_Key": KryptItemData(
         code=80000040,
         type=ItemClassification.progression,
         db_id=40,
     ),
-    "E1Key": KryptItemData(
+    "E1_Key": KryptItemData(
         code=80000041,
         type=ItemClassification.progression,
         db_id=41,
     ),
-    "E2Key": KryptItemData(
+    "E2_Key": KryptItemData(
         code=80000042,
         type=ItemClassification.progression,
         db_id=42,
     ),
-    "E3Key": KryptItemData(
+    "E3_Key": KryptItemData(
         code=80000043,
         type=ItemClassification.progression,
         db_id=43,
     ),
-    "E4Key": KryptItemData(
+    "E4_Key": KryptItemData(
         code=80000044,
         type=ItemClassification.progression,
         db_id=44,
     ),
-    "E5Key": KryptItemData(
+    "E5_Key": KryptItemData(
         code=80000045,
         type=ItemClassification.progression,
         db_id=45,
     ),
-    "E6Key": KryptItemData(
+    "E6_Key": KryptItemData(
         code=80000046,
         type=ItemClassification.progression,
         db_id=46,
     ),
-    "E7Key": KryptItemData(
+    "E7_Key": KryptItemData(
         code=80000047,
         type=ItemClassification.progression,
         db_id=47,
     ),
-    "E8Key": KryptItemData(
+    "E8_Key": KryptItemData(
         code=80000048,
         type=ItemClassification.progression,
         db_id=48,
     ),
-    "E9Key": KryptItemData(
+    "E9_Key": KryptItemData(
         code=80000049,
         type=ItemClassification.progression,
         db_id=49,
     ),
-    "E10Key": KryptItemData(
+    "E10_Key": KryptItemData(
         code=80000050,
         type=ItemClassification.progression,
         db_id=50,
     ),
-    
+    "F1_Key": KryptItemData(
+        code=80000051,
+        type=ItemClassification.progression,
+        db_id=51,
+    ),
+    "F2_Key": KryptItemData(
+        code=80000052,
+        type=ItemClassification.progression,
+        db_id=52,
+    ),
+    "F3_Key": KryptItemData(
+        code=80000053,
+        type=ItemClassification.progression,
+        db_id=53,
+    ),
+    "F4_Key": KryptItemData(
+        code=80000054,
+        type=ItemClassification.progression,
+        db_id=54,
+    ),
+    "F5_Key": KryptItemData(
+        code=80000055,
+        type=ItemClassification.progression,
+        db_id=55,
+    ),
+    "F6_Key": KryptItemData(
+        code=80000056,
+        type=ItemClassification.progression,
+        db_id=56,
+    ),
+    "F7_Key": KryptItemData(
+        code=80000057,
+        type=ItemClassification.progression,
+        db_id=57,
+    ),
+    "F8_Key": KryptItemData(
+        code=80000058,
+        type=ItemClassification.progression,
+        db_id=58,
+    ),
+    "F9_Key": KryptItemData(
+        code=80000059,
+        type=ItemClassification.progression,
+        db_id=59,
+    ),
+    "F10_Key": KryptItemData(
+        code=80000060,
+        type=ItemClassification.progression,
+        db_id=60,
+    ),
 }
 
 item_table = {name: data.code for name, data in item_data_table.items() if data.code is not None}
